@@ -473,8 +473,25 @@ async function submitForecast() {
   btn.innerHTML = '<span class="spinner"></span>Submitting...';
 
   try {
+    // Build URL params explicitly including all month keys
     const params = new URLSearchParams();
-    Object.keys(payload).forEach(k => params.append(k, payload[k]));
+    // Fixed fields
+    ['timestamp','week','year','project','brand','company','owner','total','notes','month_labels'].forEach(k => {
+      params.append(k, payload[k] !== undefined ? payload[k] : '');
+    });
+    // Month fields — all 38 possible keys
+    const allMonthKeys = [
+      'apr_26','may_26','jun_26','jul_26','aug_26','sep_26',
+      'oct_26','nov_26','dec_26','jan_27','feb_27','mar_27',
+      'apr_27','may_27','jun_27','jul_27','aug_27','sep_27',
+      'oct_27','nov_27','dec_27','jan_28','feb_28','mar_28',
+      'apr_28','may_28','jun_28','jul_28','aug_28','sep_28',
+      'oct_28','nov_28','dec_28','jan_29','feb_29','mar_29',
+      'apr_29','may_29'
+    ];
+    allMonthKeys.forEach(k => {
+      params.append(k, payload[k] !== undefined ? payload[k] : 0);
+    });
     await fetch(SHEET_URL, {
       method: 'POST',
       mode: 'no-cors',
