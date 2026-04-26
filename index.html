@@ -28,6 +28,7 @@
   .card { background:var(--surface); border:1px solid var(--border); border-radius:var(--radius-lg); padding:1.25rem; margin-bottom:1rem; }
   .card-label { font-size:10px; font-weight:600; letter-spacing:.08em; text-transform:uppercase; color:var(--faint); margin-bottom:14px; }
   .row2 { display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:10px; }
+  .row3 { display:grid; grid-template-columns:1fr 1fr 1fr; gap:10px; margin-bottom:10px; }
   .field { display:flex; flex-direction:column; gap:5px; }
   .field label { font-size:12px; font-weight:500; color:var(--muted); }
   .field input, .field select, .field textarea {
@@ -38,10 +39,15 @@
   }
   .field input:focus, .field select:focus, .field textarea:focus { border-color:var(--accent); background:#fff; }
   .field textarea { height:70px; resize:vertical; line-height:1.5; }
-  .month-row {
-    display:flex; align-items:center; gap:12px;
-    padding:9px 0; border-bottom:1px solid var(--border);
+  /* Auto-filled fields */
+  .field input.auto-filled {
+    background:var(--accent-bg); border-color:var(--accent);
+    color:var(--accent); font-weight:500; cursor:default;
   }
+  .auto-label { font-size:10px; color:var(--accent); margin-top:2px; }
+
+  /* Month rows */
+  .month-row { display:flex; align-items:center; gap:12px; padding:9px 0; border-bottom:1px solid var(--border); }
   .month-row:last-of-type { border-bottom:none; }
   .m-name { width:54px; font-size:12px; font-weight:500; color:var(--muted); flex-shrink:0; }
   .m-bar-track { flex:1; height:4px; background:var(--border); border-radius:99px; overflow:hidden; }
@@ -57,16 +63,22 @@
   .m-input.has-val { border-color:var(--border2); }
   .m-suffix { font-size:11px; color:var(--faint); }
   .m-full-val { width:90px; text-align:right; font-size:11px; color:var(--faint); font-family:var(--mono); flex-shrink:0; }
+
+  /* Summary */
   .summary-grid { display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:1rem; }
   .s-card { background:var(--bg); border:1px solid var(--border); border-radius:var(--radius); padding:12px 14px; }
   .s-label { font-size:11px; color:var(--muted); margin-bottom:4px; }
   .s-val { font-size:20px; font-weight:600; color:var(--text); letter-spacing:-.3px; }
   .s-sub { font-size:11px; color:var(--faint); margin-top:2px; font-family:var(--mono); }
+
+  /* Meta */
   .meta-bar {
     display:flex; gap:16px; flex-wrap:wrap; font-size:11px; color:var(--faint);
     font-family:var(--mono); background:var(--bg); border:1px solid var(--border);
     border-radius:var(--radius); padding:8px 12px; margin-bottom:1rem;
   }
+
+  /* Buttons */
   .btn-row { display:flex; gap:8px; align-items:center; }
   .btn-primary {
     font-family:var(--font); font-size:14px; font-weight:500;
@@ -81,6 +93,8 @@
     border-radius:var(--radius); padding:10px 16px; cursor:pointer; transition:background .15s;
   }
   .btn-ghost:hover { background:var(--border); }
+
+  /* Tabs */
   .tabs { display:flex; gap:2px; background:var(--border); border-radius:var(--radius); padding:3px; margin-bottom:1rem; }
   .tab {
     flex:1; text-align:center; padding:8px; font-size:13px; font-weight:500;
@@ -90,9 +104,13 @@
   .tab.active { background:var(--surface); color:var(--text); }
   .view { display:none; }
   .view.active { display:block; }
+
+  /* Banner */
   .banner { display:none; border-radius:var(--radius); padding:10px 14px; font-size:13px; margin-bottom:1rem; }
   .banner.success { background:var(--success-bg); color:var(--success); border:1px solid #bbf7d0; }
   .banner.error   { background:#FEF2F2; color:var(--danger); border:1px solid #fecaca; }
+
+  /* Log */
   .log-empty { font-size:13px; color:var(--muted); padding:8px 0; }
   .log-tbl { width:100%; border-collapse:collapse; font-size:12px; table-layout:fixed; }
   .log-tbl th {
@@ -103,10 +121,14 @@
   .log-tbl tr:last-child td { border-bottom:none; }
   .log-detail td { color:var(--faint)!important; white-space:normal!important; line-height:1.6; }
   .wk-badge { display:inline-block; font-size:10px; font-weight:500; font-family:var(--mono); padding:2px 7px; border-radius:20px; background:var(--accent-bg); color:var(--accent); }
+
+  /* Spinner */
   .spinner { display:inline-block; width:14px; height:14px; border:2px solid rgba(255,255,255,.3); border-top-color:#fff; border-radius:50%; animation:spin .6s linear infinite; margin-right:6px; vertical-align:middle; }
   @keyframes spin { to { transform:rotate(360deg); } }
+
   @media (max-width:480px) {
     .row2 { grid-template-columns:1fr; }
+    .row3 { grid-template-columns:1fr; }
     .m-full-val { display:none; }
     .m-input-wrap { width:140px; }
     .summary-grid { grid-template-columns:1fr; }
@@ -140,22 +162,45 @@
 
     <div class="card">
       <div class="card-label">Project details</div>
+
+      <!-- Row 1: Project + Email -->
       <div class="row2">
         <div class="field">
           <label>Project</label>
-          <select id="proj">
+          <select id="proj" onchange="onProjectChange()">
             <option value="">Select project...</option>
-            <option>BeYoute — Bonlife</option>
-            <option>Master Nerv — Mejorecare</option>
-            <option>Pomegranate — GoHerb</option>
-            <option>Reneicare — GoHerb</option>
-            <option>M. Chocolate — Mizino</option>
-            <option>M. Placenta — Mizino</option>
-            <option>M. Enzyme — Mizino</option>
-            <option>Recovery — Naturelish</option>
-            <option>Eco Plus — GTI</option>
-            <option>Mformula — Naturelish</option>
-            <option>Bugucare — Naturelish</option>
+            <option>BeYoute</option>
+            <option>Master Nerv</option>
+            <option>Pomegranate</option>
+            <option>Reneicare</option>
+            <option>M.Chocolate</option>
+            <option>M.Placenta</option>
+            <option>M.Enzyme</option>
+            <option>Recovery</option>
+            <option>Eco Plus</option>
+            <option>Mformula</option>
+            <option>Bugucare</option>
+            <option>Ninoko</option>
+            <option>Skindae</option>
+            <option>Agepros</option>
+            <option>KidsAlE</option>
+            <option>MCS</option>
+            <option>LivAct</option>
+            <option>KATA</option>
+            <option>iLady</option>
+            <option>Mplus</option>
+            <option>Scale Story</option>
+            <option>Zeero</option>
+            <option>Dr. Smile</option>
+            <option>Scale Gem</option>
+            <option>Jourish</option>
+            <option>URO360</option>
+            <option>IsoKae</option>
+            <option>YCT</option>
+            <option>Jeeroul</option>
+            <option>Funffy</option>
+            <option>Mosie</option>
+            <option>TGC</option>
           </select>
         </div>
         <div class="field">
@@ -163,6 +208,22 @@
           <input type="email" id="owner" placeholder="your@email.com" />
         </div>
       </div>
+
+      <!-- Row 2: Brand + Company (auto-filled) -->
+      <div class="row2">
+        <div class="field">
+          <label>Brand</label>
+          <input type="text" id="brand" readonly placeholder="Auto-filled" />
+          <div class="auto-label" id="brand-note" style="display:none">Auto-filled from project</div>
+        </div>
+        <div class="field">
+          <label>Company</label>
+          <input type="text" id="company" readonly placeholder="Auto-filled" />
+          <div class="auto-label" id="company-note" style="display:none">Auto-filled from project</div>
+        </div>
+      </div>
+
+      <!-- Message -->
       <div class="field">
         <label>Message to Supply Chain</label>
         <textarea id="notes" placeholder="May be having Live Session / YRDZ / Special Promo in next month"></textarea>
@@ -209,9 +270,73 @@
 </div>
 
 <script>
+// ── Google Apps Script Web App URL ──
 const SHEET_URL = 'https://script.google.com/macros/s/AKfycbyuKFv2Woq13D4YuZUJpg5zUfv1-82kSQQJ56ADZkjafk3xZyBr-G3akvFvvHRKSmUxqQ/exec';
+
+// ── Project → Brand + Company lookup ──
+const PROJECT_DATA = {
+  'BeYoute':     { brand: 'Bonlife',     company: 'CTG Wellness' },
+  'Master Nerv': { brand: 'Mejorecare',  company: 'CTG Wellness' },
+  'Pomegranate': { brand: 'GoHerb',      company: 'GoHerb' },
+  'Reneicare':   { brand: 'GoHerb',      company: 'GoHerb' },
+  'M.Chocolate': { brand: 'Mizino',      company: 'CTG Ricebow' },
+  'M.Placenta':  { brand: 'Mizino',      company: 'Leaf Cottage' },
+  'M.Enzyme':    { brand: 'Mizino',      company: 'CTG Ricebow' },
+  'Recovery':    { brand: 'Naturelish',  company: 'Oasis CTG' },
+  'Eco Plus':    { brand: 'Naturelish',  company: 'GTI' },
+  'Mformula':    { brand: 'Naturelish',  company: 'Oasis CTG' },
+  'Bugucare':    { brand: 'Naturelish',  company: 'Naturelish' },
+  'Ninoko':      { brand: 'Ninoko',      company: 'Oasis CTG' },
+  'Skindae':     { brand: 'Skindae',     company: 'Skindae' },
+  'Agepros':     { brand: 'SwissMed',    company: 'Gold Waves' },
+  'KidsAlE':     { brand: 'SwissMed',    company: 'CTG Wellness' },
+  'MCS':         { brand: 'MCS',         company: 'CTG' },
+  'LivAct':      { brand: 'Wellsprings', company: 'CTG Wellness' },
+  'KATA':        { brand: 'KATA',        company: 'Minfinity' },
+  'iLady':       { brand: 'iProcare',    company: 'Iprocare' },
+  'Mplus':       { brand: 'Mplus',       company: 'M PLUS SKINPRO' },
+  'Scale Story': { brand: 'Scale Story', company: 'Scale Story' },
+  'Zeero':       { brand: 'Zeero',       company: 'Zeero Skincare' },
+  'Dr. Smile':   { brand: 'Dr. Smile',   company: 'DrSmile Whitening' },
+  'Scale Gem':   { brand: 'Scale Gem',   company: 'Carezen' },
+  'Jourish':     { brand: 'Jourish',     company: 'Jourish Wellness' },
+  'URO360':      { brand: 'Naturelish',  company: 'Naturelish' },
+  'IsoKae':      { brand: 'Naturelish',  company: 'Zen E Wellness' },
+  'YCT':         { brand: 'YCT',         company: 'Yuan Chuan Tang CTG4u' },
+  'Jeeroul':     { brand: 'Jeeroul',     company: 'CTG4u Jeeroul' },
+  'Funffy':      { brand: 'Funffy',      company: 'CTG4u Funffy' },
+  'Mosie':       { brand: 'Mosie',       company: 'Nuan Nuan' },
+  'TGC':         { brand: 'TGC',         company: 'CTG4u TGC' },
+};
+
 const MONTHS = ["Apr'26","May'26","Jun'26","Jul'26","Aug'26","Sep'26","Oct'26","Nov'26","Dec'26","Jan'27","Feb'27","Mar'27"];
 let submissions = [];
+
+// ── Auto-fill Brand & Company on project select ──
+function onProjectChange() {
+  const proj = document.getElementById('proj').value;
+  const brandEl   = document.getElementById('brand');
+  const companyEl = document.getElementById('company');
+  const brandNote   = document.getElementById('brand-note');
+  const companyNote = document.getElementById('company-note');
+
+  if (proj && PROJECT_DATA[proj]) {
+    const data = PROJECT_DATA[proj];
+    brandEl.value   = data.brand;
+    companyEl.value = data.company;
+    brandEl.classList.add('auto-filled');
+    companyEl.classList.add('auto-filled');
+    brandNote.style.display   = 'block';
+    companyNote.style.display = 'block';
+  } else {
+    brandEl.value   = '';
+    companyEl.value = '';
+    brandEl.classList.remove('auto-filled');
+    companyEl.classList.remove('auto-filled');
+    brandNote.style.display   = 'none';
+    companyNote.style.display = 'none';
+  }
+}
 
 function getWeek(d) {
   const u = new Date(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()));
@@ -225,7 +350,7 @@ function updateMeta() {
   const n = new Date();
   document.getElementById('meta-ts').textContent = 'Timestamp: ' + n.toLocaleString('en-MY');
   document.getElementById('meta-wk').textContent = 'Week W' + getWeek(n) + '/' + n.getFullYear();
-  document.getElementById('meta-fy').textContent = 'FY Apr ' + n.getFullYear() + '–Mar ' + (n.getFullYear() + 1);
+  document.getElementById('meta-fy').textContent = 'FY Apr 2026–Mar 2027';
 }
 
 function buildRows() {
@@ -252,7 +377,6 @@ function calc() {
   const vals = MONTHS.map((_, i) => parseFloat(document.getElementById('m' + i).value) || 0);
   const sum = vals.reduce((a, b) => a + b, 0);
   const filled = vals.filter(v => v > 0).length;
-  // Bar = relative to highest month entered
   const max = Math.max(...vals, 1);
 
   vals.forEach((v, i) => {
@@ -284,8 +408,11 @@ function showBanner(msg, type = 'success') {
 }
 
 async function submitForecast() {
-  const proj  = document.getElementById('proj').value;
-  const owner = document.getElementById('owner').value.trim();
+  const proj    = document.getElementById('proj').value;
+  const owner   = document.getElementById('owner').value.trim();
+  const brand   = document.getElementById('brand').value;
+  const company = document.getElementById('company').value;
+
   if (!proj)  { showBanner('Please select a project.', 'error'); return; }
   if (!owner) { showBanner('Please enter your email address.', 'error'); return; }
 
@@ -301,6 +428,8 @@ async function submitForecast() {
     week:      'W' + getWeek(n) + '/' + n.getFullYear(),
     year:      n.getFullYear(),
     project:   proj,
+    brand:     brand,
+    company:   company,
     owner:     owner,
     apr:  vals[0],  may:  vals[1],  jun: vals[2],
     jul:  vals[3],  aug:  vals[4],  sep: vals[5],
@@ -334,9 +463,15 @@ async function submitForecast() {
 }
 
 function clearAll() {
-  document.getElementById('proj').value  = '';
-  document.getElementById('owner').value = '';
-  document.getElementById('notes').value = '';
+  document.getElementById('proj').value    = '';
+  document.getElementById('owner').value   = '';
+  document.getElementById('notes').value   = '';
+  document.getElementById('brand').value   = '';
+  document.getElementById('company').value = '';
+  document.getElementById('brand').classList.remove('auto-filled');
+  document.getElementById('company').classList.remove('auto-filled');
+  document.getElementById('brand-note').style.display   = 'none';
+  document.getElementById('company-note').style.display = 'none';
   MONTHS.forEach((_, i) => {
     const el = document.getElementById('m' + i);
     if (el) { el.value = ''; el.classList.remove('has-val'); }
@@ -358,23 +493,24 @@ function updateLog() {
     return;
   }
   let h = `<table class="log-tbl"><thead><tr>
-    <th style="width:28%">Project</th>
+    <th style="width:20%">Project</th>
+    <th style="width:20%">Brand</th>
     <th style="width:22%">Email</th>
-    <th style="width:26%">Timestamp</th>
-    <th style="width:12%">Week</th>
-    <th style="width:12%">Total</th>
+    <th style="width:20%">Timestamp</th>
+    <th style="width:10%">Week</th>
+    <th style="width:8%">Total</th>
   </tr></thead><tbody>`;
   submissions.forEach(s => {
-    const shortProj = s.project.split('—')[0].trim();
     const detail = MONTHS.map((m, i) => s.vals[i] > 0 ? m + ': RM' + s.vals[i] + 'k' : '').filter(Boolean).join('  ·  ');
     h += `<tr>
-      <td title="${s.project}">${shortProj}</td>
+      <td title="${s.project}">${s.project}</td>
+      <td>${s.brand}</td>
       <td title="${s.owner}">${s.owner}</td>
       <td style="color:var(--muted);font-size:11px;font-family:var(--mono)">${s.timestamp}</td>
       <td><span class="wk-badge">${s.week}</span></td>
       <td style="font-family:var(--mono);font-weight:500">RM ${s.total.toLocaleString()}k</td>
     </tr>`;
-    if (detail) h += `<tr class="log-detail"><td colspan="5" style="font-size:11px;padding:2px 8px 10px;font-family:var(--mono)">${detail}</td></tr>`;
+    if (detail) h += `<tr class="log-detail"><td colspan="6" style="font-size:11px;padding:2px 8px 10px;font-family:var(--mono)">${detail}</td></tr>`;
   });
   h += '</tbody></table>';
   wrap.innerHTML = h;
