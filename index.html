@@ -271,7 +271,7 @@
 
 <script>
 // ── Google Apps Script Web App URL ──
-const SHEET_URL = 'https://script.google.com/macros/s/AKfycbwKGB3Q0oM-veIqrV6KPaUr87d4a_ctMcCCLL9-TwtVaD5WwQ5wAmwdMpN2zH0F4W81xA/exec';
+const SHEET_URL = 'https://script.google.com/macros/s/AKfycbzbK1f0SJklauTHjsziae0Arz1tMLBZzljsHpmf-1BWgYpYa3ASfy8d4j0pi0CXjceDDg/exec';
 
 // ── Project → Brand + Company lookup ──
 const PROJECT_DATA = {
@@ -309,7 +309,32 @@ const PROJECT_DATA = {
   'TGC':         { brand: 'TGC',         company: 'CTG4u TGC' },
 };
 
-const MONTHS = ["Apr'26","May'26","Jun'26","Jul'26","Aug'26","Sep'26","Oct'26","Nov'26","Dec'26","Jan'27","Feb'27","Mar'27"];
+// ── All 38 months Apr'26 to May'29 ──
+const ALL_MONTHS_DATA = [
+  {label:"Apr'26",key:"apr_26"},{label:"May'26",key:"may_26"},{label:"Jun'26",key:"jun_26"},
+  {label:"Jul'26",key:"jul_26"},{label:"Aug'26",key:"aug_26"},{label:"Sep'26",key:"sep_26"},
+  {label:"Oct'26",key:"oct_26"},{label:"Nov'26",key:"nov_26"},{label:"Dec'26",key:"dec_26"},
+  {label:"Jan'27",key:"jan_27"},{label:"Feb'27",key:"feb_27"},{label:"Mar'27",key:"mar_27"},
+  {label:"Apr'27",key:"apr_27"},{label:"May'27",key:"may_27"},{label:"Jun'27",key:"jun_27"},
+  {label:"Jul'27",key:"jul_27"},{label:"Aug'27",key:"aug_27"},{label:"Sep'27",key:"sep_27"},
+  {label:"Oct'27",key:"oct_27"},{label:"Nov'27",key:"nov_27"},{label:"Dec'27",key:"dec_27"},
+  {label:"Jan'28",key:"jan_28"},{label:"Feb'28",key:"feb_28"},{label:"Mar'28",key:"mar_28"},
+  {label:"Apr'28",key:"apr_28"},{label:"May'28",key:"may_28"},{label:"Jun'28",key:"jun_28"},
+  {label:"Jul'28",key:"jul_28"},{label:"Aug'28",key:"aug_28"},{label:"Sep'28",key:"sep_28"},
+  {label:"Oct'28",key:"oct_28"},{label:"Nov'28",key:"nov_28"},{label:"Dec'28",key:"dec_28"},
+  {label:"Jan'29",key:"jan_29"},{label:"Feb'29",key:"feb_29"},{label:"Mar'29",key:"mar_29"},
+  {label:"Apr'29",key:"apr_29"},{label:"May'29",key:"may_29"}
+];
+
+// Rolling 12 months starting from current month
+function getRollingMonths() {
+  const now = new Date();
+  const currentLabel = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'][now.getMonth()] + "'" + String(now.getFullYear()).slice(2);
+  const startIdx = ALL_MONTHS_DATA.findIndex(m => m.label === currentLabel);
+  const idx = startIdx >= 0 ? startIdx : 0;
+  return ALL_MONTHS_DATA.slice(idx, idx + 12);
+}
+const MONTHS = getRollingMonths();
 let submissions = [];
 
 // ── Auto-fill Brand & Company on project select ──
@@ -350,7 +375,8 @@ function updateMeta() {
   const n = new Date();
   document.getElementById('meta-ts').textContent = 'Timestamp: ' + n.toLocaleString('en-MY');
   document.getElementById('meta-wk').textContent = 'Week W' + getWeek(n) + '/' + n.getFullYear();
-  document.getElementById('meta-fy').textContent = 'FY Apr 2026–Mar 2027';
+  const ms = MONTHS[0]; const me = MONTHS[11];
+  document.getElementById('meta-fy').textContent = ms.label + ' – ' + me.label;
 }
 
 function buildRows() {
@@ -360,7 +386,7 @@ function buildRows() {
     const row = document.createElement('div');
     row.className = 'month-row';
     row.innerHTML = `
-      <div class="m-name">${m}</div>
+      <div class="m-name">${m.label}</div>
       <div class="m-bar-track"><div class="m-bar-fill" id="bar${i}"></div></div>
       <div class="m-input-wrap">
         <span class="m-prefix">RM</span>
@@ -374,7 +400,7 @@ function buildRows() {
 }
 
 function calc() {
-  const vals = MONTHS.map((_, i) => parseFloat(document.getElementById('m' + i).value) || 0);
+  const vals = MONTHS.map((_, i) => parseFloat(document.getElementById('m' + i).value) || 0); // indexed by display order
   const sum = vals.reduce((a, b) => a + b, 0);
   const filled = vals.filter(v => v > 0).length;
   const max = Math.max(...vals, 1);
@@ -423,6 +449,11 @@ async function submitForecast() {
   }
 
   const n = new Date();
+  // Map values back to fixed month keys regardless of display order
+  // Build month payload using unique keys like apr_26, may_26 etc
+  const monthPayload = {};
+  MONTHS.forEach((m, i) => { monthPayload[m.key] = vals[i]; });
+
   const payload = {
     timestamp: n.toLocaleString('en-MY'),
     week:      'W' + getWeek(n) + '/' + n.getFullYear(),
@@ -431,12 +462,10 @@ async function submitForecast() {
     brand:     brand,
     company:   company,
     owner:     owner,
-    apr:  vals[0],  may:  vals[1],  jun: vals[2],
-    jul:  vals[3],  aug:  vals[4],  sep: vals[5],
-    oct:  vals[6],  nov:  vals[7],  dec: vals[8],
-    jan:  vals[9],  feb:  vals[10], mar: vals[11],
-    total: vals.reduce((a, b) => a + b, 0),
-    notes: document.getElementById('notes').value.trim()
+    total:     vals.reduce((a, b) => a + b, 0),
+    notes:     document.getElementById('notes').value.trim(),
+    month_labels: MONTHS.map(m => m.label).join(','),
+    ...monthPayload
   };
 
   const btn = document.getElementById('submit-btn');
@@ -503,7 +532,7 @@ function updateLog() {
     <th style="width:8%">Total</th>
   </tr></thead><tbody>`;
   submissions.forEach(s => {
-    const detail = MONTHS.map((m, i) => s.vals[i] > 0 ? m + ': RM' + s.vals[i] + 'k' : '').filter(Boolean).join('  ·  ');
+    const detail = MONTHS.map((m, i) => s.vals[i] > 0 ? m.label + ': RM' + s.vals[i] + 'k' : '').filter(Boolean).join('  ·  ');
     h += `<tr>
       <td title="${s.project}">${s.project}</td>
       <td>${s.brand}</td>
