@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Sales Forecast — Input Form</title>
+<title>CTG Project Sales Forecast</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
@@ -19,20 +19,14 @@
   }
   body { font-family:var(--font); background:var(--bg); color:var(--text); min-height:100vh; padding:2rem 1rem 4rem; }
   .wrapper { max-width:640px; margin:0 auto; }
-
-  /* Header */
   .header { margin-bottom:2rem; }
   .header-top { display:flex; align-items:center; gap:10px; margin-bottom:6px; }
   .logo-mark { width:32px; height:32px; border-radius:8px; background:var(--text); display:flex; align-items:center; justify-content:center; }
   .logo-mark svg { width:16px; height:16px; }
   h1 { font-size:20px; font-weight:600; letter-spacing:-.3px; }
   .header p { font-size:13px; color:var(--muted); line-height:1.5; }
-
-  /* Cards */
   .card { background:var(--surface); border:1px solid var(--border); border-radius:var(--radius-lg); padding:1.25rem; margin-bottom:1rem; }
   .card-label { font-size:10px; font-weight:600; letter-spacing:.08em; text-transform:uppercase; color:var(--faint); margin-bottom:14px; }
-
-  /* Fields */
   .row2 { display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:10px; }
   .field { display:flex; flex-direction:column; gap:5px; }
   .field label { font-size:12px; font-weight:500; color:var(--muted); }
@@ -43,20 +37,13 @@
     outline:none; transition:border-color .15s; width:100%;
   }
   .field input:focus, .field select:focus, .field textarea:focus { border-color:var(--accent); background:#fff; }
-  .field textarea { height:60px; resize:vertical; line-height:1.5; }
-
-  /* Month rows */
-  .q-label {
-    font-size:10px; font-weight:600; letter-spacing:.07em; text-transform:uppercase;
-    color:var(--faint); padding:14px 0 8px; border-top:1px solid var(--border); margin-top:4px;
-  }
-  .q-label:first-child { border-top:none; padding-top:0; }
+  .field textarea { height:70px; resize:vertical; line-height:1.5; }
   .month-row {
     display:flex; align-items:center; gap:12px;
-    padding:8px 0; border-bottom:1px solid var(--border);
+    padding:9px 0; border-bottom:1px solid var(--border);
   }
   .month-row:last-of-type { border-bottom:none; }
-  .m-name { width:36px; font-size:13px; font-weight:500; color:var(--muted); flex-shrink:0; }
+  .m-name { width:54px; font-size:12px; font-weight:500; color:var(--muted); flex-shrink:0; }
   .m-bar-track { flex:1; height:4px; background:var(--border); border-radius:99px; overflow:hidden; }
   .m-bar-fill { height:100%; width:0%; background:var(--accent); border-radius:99px; transition:width .3s ease; }
   .m-input-wrap { display:flex; align-items:center; gap:5px; flex-shrink:0; width:170px; }
@@ -70,22 +57,16 @@
   .m-input.has-val { border-color:var(--border2); }
   .m-suffix { font-size:11px; color:var(--faint); }
   .m-full-val { width:90px; text-align:right; font-size:11px; color:var(--faint); font-family:var(--mono); flex-shrink:0; }
-
-  /* Summary */
   .summary-grid { display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:1rem; }
   .s-card { background:var(--bg); border:1px solid var(--border); border-radius:var(--radius); padding:12px 14px; }
   .s-label { font-size:11px; color:var(--muted); margin-bottom:4px; }
   .s-val { font-size:20px; font-weight:600; color:var(--text); letter-spacing:-.3px; }
   .s-sub { font-size:11px; color:var(--faint); margin-top:2px; font-family:var(--mono); }
-
-  /* Meta */
   .meta-bar {
     display:flex; gap:16px; flex-wrap:wrap; font-size:11px; color:var(--faint);
     font-family:var(--mono); background:var(--bg); border:1px solid var(--border);
     border-radius:var(--radius); padding:8px 12px; margin-bottom:1rem;
   }
-
-  /* Buttons */
   .btn-row { display:flex; gap:8px; align-items:center; }
   .btn-primary {
     font-family:var(--font); font-size:14px; font-weight:500;
@@ -95,13 +76,11 @@
   .btn-primary:hover { opacity:.82; }
   .btn-primary:disabled { opacity:.4; cursor:not-allowed; }
   .btn-ghost {
-    font-family:var(--font); font-size:14px; font-weight:400;
+    font-family:var(--font); font-size:14px;
     background:transparent; color:var(--muted); border:1px solid var(--border);
     border-radius:var(--radius); padding:10px 16px; cursor:pointer; transition:background .15s;
   }
   .btn-ghost:hover { background:var(--border); }
-
-  /* Tabs */
   .tabs { display:flex; gap:2px; background:var(--border); border-radius:var(--radius); padding:3px; margin-bottom:1rem; }
   .tab {
     flex:1; text-align:center; padding:8px; font-size:13px; font-weight:500;
@@ -111,35 +90,21 @@
   .tab.active { background:var(--surface); color:var(--text); }
   .view { display:none; }
   .view.active { display:block; }
-
-  /* Banner */
   .banner { display:none; border-radius:var(--radius); padding:10px 14px; font-size:13px; margin-bottom:1rem; }
   .banner.success { background:var(--success-bg); color:var(--success); border:1px solid #bbf7d0; }
   .banner.error   { background:#FEF2F2; color:var(--danger); border:1px solid #fecaca; }
-
-  /* Log */
   .log-empty { font-size:13px; color:var(--muted); padding:8px 0; }
   .log-tbl { width:100%; border-collapse:collapse; font-size:12px; table-layout:fixed; }
   .log-tbl th {
     text-align:left; font-weight:600; font-size:10px; letter-spacing:.06em;
     text-transform:uppercase; color:var(--faint); padding:6px 8px; border-bottom:1px solid var(--border);
   }
-  .log-tbl td { padding:8px 8px; border-bottom:1px solid var(--border); color:var(--text); overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+  .log-tbl td { padding:8px; border-bottom:1px solid var(--border); color:var(--text); overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
   .log-tbl tr:last-child td { border-bottom:none; }
   .log-detail td { color:var(--faint)!important; white-space:normal!important; line-height:1.6; }
-  .wk-badge {
-    display:inline-block; font-size:10px; font-weight:500; font-family:var(--mono);
-    padding:2px 7px; border-radius:20px; background:var(--accent-bg); color:var(--accent);
-  }
-
-  /* Spinner */
-  .spinner {
-    display:inline-block; width:14px; height:14px;
-    border:2px solid rgba(255,255,255,.3); border-top-color:#fff;
-    border-radius:50%; animation:spin .6s linear infinite; margin-right:6px; vertical-align:middle;
-  }
+  .wk-badge { display:inline-block; font-size:10px; font-weight:500; font-family:var(--mono); padding:2px 7px; border-radius:20px; background:var(--accent-bg); color:var(--accent); }
+  .spinner { display:inline-block; width:14px; height:14px; border:2px solid rgba(255,255,255,.3); border-top-color:#fff; border-radius:50%; animation:spin .6s linear infinite; margin-right:6px; vertical-align:middle; }
   @keyframes spin { to { transform:rotate(360deg); } }
-
   @media (max-width:480px) {
     .row2 { grid-template-columns:1fr; }
     .m-full-val { display:none; }
@@ -160,7 +125,7 @@
           <rect x="11" y="1" width="3" height="13" rx="1" fill="white"/>
         </svg>
       </div>
-      <h1>Sales Forecast</h1>
+      <h1>CTG Project Sales Forecast</h1>
     </div>
     <p>Enter your monthly forecast in <strong>RM'000</strong>. Type <code>300</code> = RM 300,000. All submissions are timestamped by week number.</p>
   </div>
@@ -194,13 +159,13 @@
           </select>
         </div>
         <div class="field">
-          <label>Your name</label>
-          <input type="text" id="owner" placeholder="Project owner name" />
+          <label>Email address</label>
+          <input type="email" id="owner" placeholder="your@email.com" />
         </div>
       </div>
       <div class="field">
-        <label>Assumptions / notes (optional)</label>
-        <textarea id="notes" placeholder="e.g. Based on confirmed PO, seasonal uplift expected in Aug..."></textarea>
+        <label>Message to Supply Chain</label>
+        <textarea id="notes" placeholder="May be having Live Session / YRDZ / Special Promo in next month"></textarea>
       </div>
     </div>
 
@@ -244,18 +209,8 @@
 </div>
 
 <script>
-// ════════════════════════════════════════════
-// Google Apps Script Web App URL
-// ════════════════════════════════════════════
 const SHEET_URL = 'https://script.google.com/macros/s/AKfycbyuKFv2Woq13D4YuZUJpg5zUfv1-82kSQQJ56ADZkjafk3xZyBr-G3akvFvvHRKSmUxqQ/exec';
-
-const MONTHS = ['Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec','Jan','Feb','Mar'];
-const QUARTERS = [
-  { label:'Q1', months:[0,1,2] },
-  { label:'Q2', months:[3,4,5] },
-  { label:'Q3', months:[6,7,8] },
-  { label:'Q4', months:[9,10,11] },
-];
+const MONTHS = ["Apr'26","May'26","Jun'26","Jul'26","Aug'26","Sep'26","Oct'26","Nov'26","Dec'26","Jan'27","Feb'27","Mar'27"];
 let submissions = [];
 
 function getWeek(d) {
@@ -276,26 +231,20 @@ function updateMeta() {
 function buildRows() {
   const wrap = document.getElementById('month-rows');
   wrap.innerHTML = '';
-  QUARTERS.forEach(q => {
-    const ql = document.createElement('div');
-    ql.className = 'q-label';
-    ql.textContent = q.label + ' — ' + q.months.map(i => MONTHS[i]).join(', ');
-    wrap.appendChild(ql);
-    q.months.forEach(i => {
-      const row = document.createElement('div');
-      row.className = 'month-row';
-      row.innerHTML = `
-        <div class="m-name">${MONTHS[i]}</div>
-        <div class="m-bar-track"><div class="m-bar-fill" id="bar${i}"></div></div>
-        <div class="m-input-wrap">
-          <span class="m-prefix">RM</span>
-          <input class="m-input" type="number" id="m${i}" min="0" step="1" placeholder="0" oninput="calc()" />
-          <span class="m-suffix">'000</span>
-        </div>
-        <div class="m-full-val" id="mv${i}"></div>
-      `;
-      wrap.appendChild(row);
-    });
+  MONTHS.forEach((m, i) => {
+    const row = document.createElement('div');
+    row.className = 'month-row';
+    row.innerHTML = `
+      <div class="m-name">${m}</div>
+      <div class="m-bar-track"><div class="m-bar-fill" id="bar${i}"></div></div>
+      <div class="m-input-wrap">
+        <span class="m-prefix">RM</span>
+        <input class="m-input" type="number" id="m${i}" min="0" step="1" placeholder="0" oninput="calc()" />
+        <span class="m-suffix">'000</span>
+      </div>
+      <div class="m-full-val" id="mv${i}"></div>
+    `;
+    wrap.appendChild(row);
   });
 }
 
@@ -303,13 +252,16 @@ function calc() {
   const vals = MONTHS.map((_, i) => parseFloat(document.getElementById('m' + i).value) || 0);
   const sum = vals.reduce((a, b) => a + b, 0);
   const filled = vals.filter(v => v > 0).length;
+  // Bar = relative to highest month entered
   const max = Math.max(...vals, 1);
+
   vals.forEach((v, i) => {
     document.getElementById('bar' + i).style.width = (v / max * 100) + '%';
     document.getElementById('mv' + i).textContent = v > 0 ? 'RM ' + (v * 1000).toLocaleString() : '';
     const inp = document.getElementById('m' + i);
     if (v > 0) inp.classList.add('has-val'); else inp.classList.remove('has-val');
   });
+
   if (sum > 0) {
     document.getElementById('total-val').textContent  = 'RM ' + sum.toLocaleString() + 'k';
     document.getElementById('total-full').textContent = '= RM ' + (sum * 1000).toLocaleString();
@@ -335,7 +287,7 @@ async function submitForecast() {
   const proj  = document.getElementById('proj').value;
   const owner = document.getElementById('owner').value.trim();
   if (!proj)  { showBanner('Please select a project.', 'error'); return; }
-  if (!owner) { showBanner('Please enter your name.', 'error'); return; }
+  if (!owner) { showBanner('Please enter your email address.', 'error'); return; }
 
   const vals = MONTHS.map((_, i) => parseFloat(document.getElementById('m' + i).value) || 0);
   if (vals.reduce((a, b) => a + b, 0) === 0) {
@@ -363,20 +315,18 @@ async function submitForecast() {
   btn.innerHTML = '<span class="spinner"></span>Submitting...';
 
   try {
-    // Using no-cors mode to avoid CORS block — Google Apps Script handles it
     await fetch(SHEET_URL, {
       method: 'POST',
       mode: 'no-cors',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(payload)
     });
-    // no-cors returns opaque response, so we assume success if no error thrown
     submissions.unshift({ ...payload, vals });
     updateLog();
-    showBanner('Forecast submitted to Google Sheets — ' + payload.timestamp + ' · ' + payload.week);
+    showBanner('Forecast submitted — ' + payload.timestamp + ' · ' + payload.week);
     clearAll();
   } catch (err) {
-    showBanner('Submission failed: ' + err.message + '. Please try again.', 'error');
+    showBanner('Submission failed: ' + err.message, 'error');
   } finally {
     btn.disabled = false;
     btn.textContent = 'Submit forecast';
@@ -408,9 +358,9 @@ function updateLog() {
     return;
   }
   let h = `<table class="log-tbl"><thead><tr>
-    <th style="width:30%">Project</th>
-    <th style="width:18%">Owner</th>
-    <th style="width:28%">Timestamp</th>
+    <th style="width:28%">Project</th>
+    <th style="width:22%">Email</th>
+    <th style="width:26%">Timestamp</th>
     <th style="width:12%">Week</th>
     <th style="width:12%">Total</th>
   </tr></thead><tbody>`;
@@ -419,7 +369,7 @@ function updateLog() {
     const detail = MONTHS.map((m, i) => s.vals[i] > 0 ? m + ': RM' + s.vals[i] + 'k' : '').filter(Boolean).join('  ·  ');
     h += `<tr>
       <td title="${s.project}">${shortProj}</td>
-      <td>${s.owner}</td>
+      <td title="${s.owner}">${s.owner}</td>
       <td style="color:var(--muted);font-size:11px;font-family:var(--mono)">${s.timestamp}</td>
       <td><span class="wk-badge">${s.week}</span></td>
       <td style="font-family:var(--mono);font-weight:500">RM ${s.total.toLocaleString()}k</td>
