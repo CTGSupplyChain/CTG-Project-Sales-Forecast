@@ -271,7 +271,7 @@
 
 <script>
 // ── Google Apps Script Web App URL ──
-const SHEET_URL = 'https://script.google.com/macros/s/AKfycbwx5poT7uMO4dizlYGx5dp9e41bxZIZUL6Zj7PZY-DygBuMgdX7IdKwfgK_OpAobbq9ZQ/exec';
+const SHEET_URL = 'https://script.google.com/macros/s/AKfycbwKGB3Q0oM-veIqrV6KPaUr87d4a_ctMcCCLL9-TwtVaD5WwQ5wAmwdMpN2zH0F4W81xA/exec';
 
 // ── Project → Brand + Company lookup ──
 const PROJECT_DATA = {
@@ -444,11 +444,13 @@ async function submitForecast() {
   btn.innerHTML = '<span class="spinner"></span>Submitting...';
 
   try {
+    const params = new URLSearchParams();
+    Object.keys(payload).forEach(k => params.append(k, payload[k]));
     await fetch(SHEET_URL, {
       method: 'POST',
       mode: 'no-cors',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(payload)
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      body: params.toString()
     });
     submissions.unshift({ ...payload, vals });
     updateLog();
