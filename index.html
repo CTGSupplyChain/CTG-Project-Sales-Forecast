@@ -188,9 +188,10 @@
             <option>Master Nerv</option>
             <option>MCS</option>
             <option>Mformula</option>
-            <option>Mosie</option>
+            <option>Moesie</option>
             <option>Mplus</option>
             <option>Ninoko</option>
+            <option>NomoQ</option>
             <option>Pomegranate</option>
             <option>Recovery</option>
             <option>Reneicare</option>
@@ -287,6 +288,7 @@ const PROJECT_DATA = {
   'Mformula':    { brand: 'Naturelish',  company: 'Oasis CTG' },
   'Bugucare':    { brand: 'Naturelish',  company: 'Naturelish' },
   'Ninoko':      { brand: 'Ninoko',      company: 'Oasis CTG' },
+  'NomoQ':       { brand: 'NomoQ',       company: 'Amfound' },
   'Skindae':     { brand: 'Skindae',     company: 'Skindae' },
   'Agepros':     { brand: 'SwissMed',    company: 'Gold Waves' },
   'KidsAlE':     { brand: 'SwissMed',    company: 'CTG Wellness' },
@@ -305,7 +307,7 @@ const PROJECT_DATA = {
   'YCT':         { brand: 'YCT',         company: 'Yuan Chuan Tang CTG4u' },
   'Jeeroul':     { brand: 'Jeeroul',     company: 'CTG4u Jeeroul' },
   'Funffy':      { brand: 'Funffy',      company: 'CTG4u Funffy' },
-  'Mosie':       { brand: 'Mosie',       company: 'Nuan Nuan' },
+  'Moesie':      { brand: 'Moesie',      company: 'Nuan Nuan' },
   'TGC':         { brand: 'TGC',         company: 'CTG4u TGC' },
 };
 
@@ -379,6 +381,11 @@ function updateMeta() {
   document.getElementById('meta-fy').textContent = ms.label + ' – ' + me.label;
 }
 
+function limitInput(el) {
+  if (el.value.length > 4) el.value = el.value.slice(0, 4);
+  if (parseFloat(el.value) > 9999) el.value = 9999;
+}
+
 function buildRows() {
   const wrap = document.getElementById('month-rows');
   wrap.innerHTML = '';
@@ -390,7 +397,7 @@ function buildRows() {
       <div class="m-bar-track"><div class="m-bar-fill" id="bar${i}"></div></div>
       <div class="m-input-wrap">
         <span class="m-prefix">RM</span>
-        <input class="m-input" type="number" id="m${i}" min="0" step="1" placeholder="0" oninput="calc()" />
+        <input class="m-input" type="number" id="m${i}" min="0" max="9999" step="1" placeholder="0" oninput="calc(); limitInput(this)" />
         <span class="m-suffix">'000</span>
       </div>
       <div class="m-full-val" id="mv${i}"></div>
@@ -441,6 +448,9 @@ async function submitForecast() {
 
   if (!proj)  { showBanner('Please select a project.', 'error'); return; }
   if (!owner) { showBanner('Please enter your email address.', 'error'); return; }
+  // Validate email format
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  if (!emailRegex.test(owner)) { showBanner('Please enter a valid email address.', 'error'); return; }
 
   const vals = MONTHS.map((_, i) => parseFloat(document.getElementById('m' + i).value) || 0);
   if (vals.reduce((a, b) => a + b, 0) === 0) {
