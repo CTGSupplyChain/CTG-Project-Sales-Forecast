@@ -381,9 +381,27 @@ function updateMeta() {
   document.getElementById('meta-fy').textContent = ms.label + ' – ' + me.label;
 }
 
+function blockExtraDigits(e, el) {
+  // Allow: backspace, delete, tab, escape, enter, arrows, decimal keys
+  const allowedKeys = ['Backspace','Delete','Tab','Escape','Enter','ArrowLeft','ArrowRight','ArrowUp','ArrowDown','Home','End'];
+  if (allowedKeys.includes(e.key)) return true;
+  // Block if already 4 digits and not a control key
+  const val = el.value.replace(/[^0-9]/g, '');
+  if (val.length >= 4 && e.key >= '0' && e.key <= '9') {
+    e.preventDefault();
+    return false;
+  }
+  return true;
+}
+
 function limitInput(el) {
-  if (el.value.length > 4) el.value = el.value.slice(0, 4);
-  if (parseFloat(el.value) > 9999) el.value = 9999;
+  // Strip non-numeric characters first
+  let val = el.value.replace(/[^0-9]/g, '');
+  // Limit to 4 digits max
+  if (val.length > 4) val = val.slice(0, 4);
+  // Cap at 9999
+  if (parseInt(val) > 9999) val = '9999';
+  el.value = val;
 }
 
 function buildRows() {
@@ -397,7 +415,7 @@ function buildRows() {
       <div class="m-bar-track"><div class="m-bar-fill" id="bar${i}"></div></div>
       <div class="m-input-wrap">
         <span class="m-prefix">RM</span>
-        <input class="m-input" type="number" id="m${i}" min="0" max="9999" step="1" placeholder="0" oninput="calc(); limitInput(this)" />
+        <input class="m-input" type="number" id="m${i}" min="0" max="9999" step="1" placeholder="0" oninput="calc(); limitInput(this)" onkeydown="return blockExtraDigits(event, this)" />
         <span class="m-suffix">'000</span>
       </div>
       <div class="m-full-val" id="mv${i}"></div>
