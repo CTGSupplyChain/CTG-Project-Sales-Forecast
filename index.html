@@ -466,6 +466,8 @@ async function submitForecast() {
 
   if (!proj)  { showBanner('Please select a project.', 'error'); return; }
   if (!owner) { showBanner('Please enter your email address.', 'error'); return; }
+     if (!brand) { showBanner('Brand could not be determined. Please re-select the project.', 'error'); return; }
+     if (!company) { showBanner('Company could not be determined. Please re-select the project.', 'error'); return; }
   // Validate email format
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   if (!emailRegex.test(owner)) { showBanner('Please enter a valid email address.', 'error'); return; }
