@@ -473,8 +473,8 @@ async function submitForecast() {
   if (!emailRegex.test(owner)) { showBanner('Please enter a valid email address.', 'error'); return; }
 
   const vals = MONTHS.map((_, i) => parseFloat(document.getElementById('m' + i).value) || 0);
-  if (MONTHS.some((_, i) => document.getElementById('m' + i).value === '')) {
-    showBanner('Please fill in all 12 monthly forecast values.', 'error');
+  if (MONTHS.some((_, i) => { const v = document.getElementById('m' + i).value; return v === '' || parseFloat(v) === 0; })) {
+    showBanner('Please fill in all 12 monthly forecast values with non-zero amounts.', 'error');
     return;
   }
 
