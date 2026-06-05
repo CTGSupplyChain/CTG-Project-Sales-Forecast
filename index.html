@@ -30,6 +30,10 @@
   .row2 { display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:10px; }
   .row3 { display:grid; grid-template-columns:1fr 1fr 1fr; gap:10px; margin-bottom:10px; }
   .field { display:flex; flex-direction:column; gap:5px; }
+  .req::after { content: ' *'; color: var(--danger); font-weight:700; }
+  .m-input.field-error { border-color: var(--danger) !important; background: #fff5f5; }
+  .field-error-label { color: var(--danger); font-size:11px; margin-top:3px; display:none; }
+
   .field label { font-size:12px; font-weight:500; color:var(--muted); }
   .field input, .field select, .field textarea {
     font-family:var(--font); font-size:14px; color:var(--text);
@@ -166,7 +170,7 @@
       <!-- Row 1: Project + Email -->
       <div class="row2">
         <div class="field">
-          <label>Project</label>
+          <label class="req">Project</label>
           <select id="proj" onchange="onProjectChange()">
             <option value="">Select project...</option>
             <option>Agepros</option>
@@ -205,7 +209,7 @@
           </select>
         </div>
         <div class="field">
-          <label>Email address</label>
+          <label class="req">Email address</label>
           <input type="email" id="owner" placeholder="your@email.com" />
         </div>
       </div>
@@ -213,12 +217,12 @@
       <!-- Row 2: Brand + Company (auto-filled) -->
       <div class="row2">
         <div class="field">
-          <label>Brand</label>
+          <label class="req">Brand</label>
           <input type="text" id="brand" readonly placeholder="Auto-filled" />
           <div class="auto-label" id="brand-note" style="display:none">Auto-filled from project</div>
         </div>
         <div class="field">
-          <label>Company</label>
+          <label class="req">Company</label>
           <input type="text" id="company" readonly placeholder="Auto-filled" />
           <div class="auto-label" id="company-note" style="display:none">Auto-filled from project</div>
         </div>
@@ -232,7 +236,7 @@
     </div>
 
     <div class="card">
-      <div class="card-label">Monthly forecast — RM'000</div>
+      <div class="card-label">Monthly forecast — RM'000 <span style="color:var(--danger);font-weight:700;">*</span></div>
       <div id="month-rows"></div>
     </div>
 
@@ -415,7 +419,7 @@ function buildRows() {
       <div class="m-bar-track"><div class="m-bar-fill" id="bar${i}"></div></div>
       <div class="m-input-wrap">
         <span class="m-prefix">RM</span>
-        <input class="m-input" type="number" id="m${i}" min="0" max="9999" step="1" placeholder="0" oninput="calc(); limitInput(this)" onkeydown="return blockExtraDigits(event, this)" />
+        <input class="m-input" type="number" id="m${i}" min="0" max="9999" step="1" placeholder="0" oninput="calc(); limitInput(this); clearFieldError(this)" onkeydown="return blockExtraDigits(event, this)" />
         <span class="m-suffix">'000</span>
       </div>
       <div class="m-full-val" id="mv${i}"></div>
@@ -458,6 +462,10 @@ function showBanner(msg, type = 'success') {
   setTimeout(() => b.style.display = 'none', 7000);
 }
 
+function clearFieldError(el) {
+  el.classList.remove('field-error');
+}
+
 async function submitForecast() {
   const proj    = document.getElementById('proj').value;
   const owner   = document.getElementById('owner').value.trim();
@@ -473,8 +481,14 @@ async function submitForecast() {
   if (!emailRegex.test(owner)) { showBanner('Please enter a valid email address.', 'error'); return; }
 
   const vals = MONTHS.map((_, i) => parseFloat(document.getElementById('m' + i).value) || 0);
-  if (MONTHS.some((_, i) => { const v = document.getElementById('m' + i).value; return v === '' || parseFloat(v) === 0; })) {
-    showBanner('Please fill in all 12 monthly forecast values with non-zero amounts.', 'error');
+  const emptyMonths = MONTHS.map((_, i) => {
+    const v = document.getElementById('m' + i).value;
+    return (v === '' || parseFloat(v) === 0) ? i : -1;
+  }).filter(i => i !== -1);
+  if (emptyMonths.length > 0) {
+    emptyMonths.forEach(i => document.getElementById('m' + i).classList.add('field-error'));
+    document.getElementById('m' + emptyMonths[0]).scrollIntoView({ behavior: 'smooth', block: 'center' });
+    showBanner('Please fill in all 12 monthly forecast values with non-zero amounts. (' + emptyMonths.length + ' field' + (emptyMonths.length > 1 ? 's' : '') + ' missing)', 'error');
     return;
   }
 
