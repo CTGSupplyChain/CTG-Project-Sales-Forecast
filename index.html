@@ -11,7 +11,7 @@
   :root {
     --bg:#F7F6F2; --surface:#FFFFFF; --border:#E2DFD8; --border2:#CCC9C0;
     --text:#1A1916; --muted:#6B6860; --faint:#9E9B94;
-    --accent:#2563EB; --accent-bg:#EFF4FF;
+    --accent:#2563EB; --accent-bg:#EFF4FF;h
     --success:#16a34a; --success-bg:#F0FDF4;
     --danger:#DC2626;
     --radius:10px; --radius-lg:14px;
@@ -473,8 +473,8 @@ async function submitForecast() {
   if (!emailRegex.test(owner)) { showBanner('Please enter a valid email address.', 'error'); return; }
 
   const vals = MONTHS.map((_, i) => parseFloat(document.getElementById('m' + i).value) || 0);
-  if (vals.reduce((a, b) => a + b, 0) === 0) {
-    showBanner('Please enter at least one monthly forecast value.', 'error');
+  if (MONTHS.some((_, i) => document.getElementById('m' + i).value === '')) {
+    showBanner('Please fill in all 12 monthly forecast values.', 'error');
     return;
   }
 
